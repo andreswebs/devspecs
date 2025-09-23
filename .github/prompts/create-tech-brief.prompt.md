@@ -1,0 +1,1 @@
+/Users/andre/Programs/git-repos.self/devspecs/.devspecs/prompts/create-tech-brief.md
