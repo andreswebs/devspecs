@@ -1,1 +1,1 @@
-/Users/andre/Programs/git-repos.self/devspecs/.devspecs/memory/shell-scripting-code-conventions.md
+../../.devspecs/memory/shell-scripting-code-conventions.md

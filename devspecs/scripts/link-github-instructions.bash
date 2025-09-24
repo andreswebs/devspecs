@@ -25,13 +25,11 @@ if [ ! -d "${DEVSPECS_MEMORY_DIR}" ]; then
     exit 1
 fi
 
-mkdir -p "${GITHUB_INSTRUCTIONS_DIR}"
-
 if is_non_empty_dir "${DEVSPECS_MEMORY_DIR}"; then
     for SRC_FILE in "${DEVSPECS_MEMORY_DIR}"/*; do
         SRC_BASE_NAME=$(basename "${SRC_FILE}")
         DEST_BASE_NAME=$(generate_instructions_filename "${SRC_BASE_NAME}")
         DEST_FILE="${GITHUB_INSTRUCTIONS_DIR}/${DEST_BASE_NAME}"
-        ln -s -f -v "${SRC_FILE}" "${DEST_FILE}"
+        create_relative_symlink "${SRC_FILE}" "${DEST_FILE}"
     done
 fi

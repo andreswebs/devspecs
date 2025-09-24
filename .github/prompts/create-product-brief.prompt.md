@@ -1,1 +1,1 @@
-/Users/andre/Programs/git-repos.self/devspecs/.devspecs/prompts/create-product-brief.md
+../../.devspecs/prompts/create-product-brief.md

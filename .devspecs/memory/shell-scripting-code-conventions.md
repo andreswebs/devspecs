@@ -58,3 +58,11 @@ shfmt -i 4 -w devspecs/scripts/*.bash
 - Standard output (stdout) reserved for function return values
 - Return appropriate exit codes (0 for success, 1 for failure)
 - Validate inputs using existing validation functions where relevant
+
+### BATS Guidelines
+
+- When manipulating the filesystem during tests, make sure to use the temporary directories and global variables provided by Bats.
+- Important variables and temp directories:
+  - `BATS_FILE_TMPDIR`: A temporary directory common to all tests of a test file. Can be used to create files required by multiple tests in the same test file.
+  - `BATS_SUITE_TMPDIR`: A temporary directory common to all tests of a suite. Can be used to create files required by multiple tests.
+  - `BATS_TEST_TMPDIR`: A temporary directory unique for each test. Can be used to create files required only for specific tests.

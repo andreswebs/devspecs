@@ -1,1 +1,1 @@
-/Users/andre/Programs/git-repos.self/devspecs/.devspecs/memory/product.md
+../../.devspecs/memory/product.md
