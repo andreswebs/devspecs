@@ -54,11 +54,15 @@ git clone "${REPO_URL}" "${TMP_WORKDIR}"
 find "${DEVSPECS_SOURCE_SCRIPTS_DIR}" -maxdepth 1 -type f -name '*.bash' ! -name '*test*' -exec cp {} "${DEVSPECS_TARGET_SCRIPTS_DIR}" \;
 
 for prompt_file in "${DEVSPECS_SOURCE_PROMPTS_DIR}"/*; do
-    cp "${prompt_file}" "${DEVSPECS_TARGET_PROMPTS_DIR}"
+    if [ -f "${prompt_file}" ] && [ -r "${prompt_file}" ]; then
+        cp "${prompt_file}" "${DEVSPECS_TARGET_PROMPTS_DIR}"
+    fi
 done
 
 for memory_file in "${DEVSPECS_SOURCE_MEMORY_DIR}"/*; do
-    cp "${memory_file}" "${DEVSPECS_TARGET_MEMORY_DIR}"
+    if [ -f "${memory_file}" ] && [ -r "${memory_file}" ]; then
+        cp "${memory_file}" "${DEVSPECS_TARGET_MEMORY_DIR}"
+    fi
 done
 
 for script in "${DEVSPECS_TARGET_SCRIPTS_DIR}"/link-github-*.bash; do
