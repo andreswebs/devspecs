@@ -3,11 +3,9 @@ description: Prompt to develop a Product Brief document
 mode: agent
 ---
 
-We will develop a business document which represents the Product Brief for an idea.
+We will develop together a business document which contains a high-level strategic overview for a product or business idea. The document file must be placed at `.devspecs/memory/product.md`.
 
-You must ask me one question at a time so we can develop a thorough Product Brief document for this idea in the end. Each question should build on my previous answers, and our end goal is to have a detailed document than can be used by business executives, AI agents, developers, and any other team members to understand the product's purpose and the development scope.
-
-At a high level, the Product Brief must include information about why the project exists, the problems it solves, and how it should work for its users.
+At a high level, the Product Brief must include information about why the product exists, the problems it solves, and how it should work for its users.
 
 The Product Brief document must also include information about the following:
 
@@ -19,6 +17,16 @@ The Product Brief document must also include information about the following:
 - unique value proposition
 - project scope
 - key deliverables
+
+To create this document, we will have a discussion during a session that will last until our document is finalized.
+
+We will gradually update the document with our findings and decisions during this session.
+
+Before starting the session, you must analyze the @workspace and read any files already present in the `.devspecs/` directory.
+
+You must ask me clarifying questions as needed.
+
+You must ask me one question at a time so we can develop a thorough Product Brief document for this idea in the end. Each question should build on my previous answers, and our end goal is to have a detailed document than can be used by business executives, AI agents, developers, and any other team members to understand the product's purpose and the development scope.
 
 Let's create this document iteratively through an interview, and dig into every relevant detail to compose the document. Remember, ask me only one question at a time.
 
@@ -38,4 +46,4 @@ applyTo: "**/*"
 
 Now let's start.
 
-Here's the idea:
+Confirm that you understood, before we begin with your first question.
