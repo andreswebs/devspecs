@@ -151,18 +151,18 @@ function create_relative_symlink() {
     )
 }
 
-function check_feature_branch() {
-    local branch="${1}"
-    if ! is_valid_spec_name "${branch}"; then
-        log "error: Not on a feature branch. Current branch: $branch"
-        log "Feature branches should be named like: 001-examplename"
+function validate_spec_name() {
+    local name="${1}"
+    if ! is_valid_spec_name "${name}"; then
+        log "error: '${name}' is not a valid spec branch"
+        log "Specs should be named like: 001-examplename."
         return 1
     fi
 	return 0
 }
 
 function get_spec_dir_name() {
-    local specs_dir="${DEVSPECS_SPECS_DIR:-specs}"
+    local specs_dir="${DEVSPECS_SPECS_DIR:-.devspecs/specs}"
     # Remove all leading slashes
     while [[ "${specs_dir}" == /* ]]; do
         specs_dir="${specs_dir#/}"
@@ -175,44 +175,47 @@ function get_spec_dir_name() {
     local base_dir="${1}"
     local spec_name="${2}"
 
-    if ! is_valid_spec_name "${spec_name}"; then
-        log "error: '${spec_name}' is not a valid spec name"
-        return 1
-    fi
-
     echo "${base_dir}/${specs_dir}/${spec_name}"
 }
 
-function get_feature_dir() {
-    local base_dir="${1}"
-    local branch_name="${2}"
-
-    if ! check_feature_branch "${branch_name}"; then
-        return 1
-    fi
-
-    get_spec_dir_name "${base_dir}" "${branch_name}"
-}
-
-function get_feature_paths() {
+function get_spec_info() {
     local repo_root
     local current_branch
-    local feature_dir
+    local spec_dir
 
-    repo_root=$(get_repo_root)
-    current_branch=$(get_current_branch)
-    feature_dir=$(get_feature_dir "${repo_root}" "${current_branch}")
+    repo_root=$(get_repo_root || exit 1)
+    current_branch=$(get_current_branch || exit 1)
 
-    cat <<EOF
-REPO_ROOT='${repo_root}'
-CURRENT_BRANCH='${current_branch}'
-FEATURE_DIR='${feature_dir}'
-FEATURE_SPEC='${feature_dir}/spec.md'
-IMPL_PLAN='${feature_dir}/plan.md'
-TASKS='${feature_dir}/tasks.md'
-RESEARCH='${feature_dir}/research.md'
-DATA_MODEL='${feature_dir}/data-model.md'
-QUICKSTART='${feature_dir}/quickstart.md'
-CONTRACTS_DIR='${feature_dir}/contracts'
-EOF
+    validate_spec_name "${current_branch}" || exit 1
+
+    spec_dir=$(get_spec_dir_name "${repo_root}" "${current_branch}")
+
+    local spec_file_base_name="spec.md"
+    local plan_file_base_name="plan.md"
+    local tasks_file_base_name="tasks.md"
+    local research_file_base_name="research.md"
+    local data_model_file_base_name="data-model.md"
+    local contracts_relative_dir="contracts"
+
+    local spec_file="${spec_dir}/${spec_file_base_name}"
+    local plan_file="${spec_dir}/${plan_file_base_name}"
+    local tasks_file="${spec_dir}/${tasks_file_base_name}"
+    local research_file="${spec_dir}/${research_file_base_name}"
+    local data_model_file="${spec_dir}/${data_model_file_base_name}"
+    local contracts_dir="${spec_dir}/${contracts_relative_dir}"
+
+
+    local SPEC_INFO='{
+        "repo_root": "'${repo_root}'",
+        "current_branch": "'${current_branch}'",
+        "spec_dir": "'${spec_dir}'",
+        "spec_file": "'${spec_file}'",
+        "plan_file": "'${plan_file}'",
+        "tasks_file": "'${tasks_file}'",
+        "research_file": "'${research_file}'",
+        "data_model_file": "'${data_model_file}'",
+        "contracts_dir": "'${contracts_dir}'"
+    }'
+
+    echo "${SPEC_INFO}" | tr -d '\n' | tr -d ' '
 }

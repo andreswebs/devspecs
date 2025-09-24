@@ -12,6 +12,8 @@ source "${SCRIPT_DIR}/functions.bash"
 readonly REQUIRED_COMMANDS=(
     "git"
     "gh"
+    "tr"
+    "jq"
 )
 
 missing_commands=()

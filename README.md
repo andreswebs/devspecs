@@ -6,7 +6,7 @@
 
 Non-goals:
 
-- support other AI assistant tools besides GitHub Copilot
+- support other AI assistant tools besides GitHub Copilot and maybe Goose
 - support Windows
 
 ## Install
@@ -17,10 +17,12 @@ curl -sSL https://raw.githubusercontent.com/andreswebs/devspecs/refs/heads/main/
 
 ## Acknowledgements
 
-This is work inspired by [Kiro](https://kiro.dev/), [Spec Kit](https://github.com/github/spec-kit), and other tools:
+This is work inspired by [Kiro](https://kiro.dev/), [Spec Kit](https://github.com/github/spec-kit), and various other projects:
 
 - <https://github.com/automazeio/ccpm>
 - <https://github.com/eyaltoledano/claude-task-master>
+- <https://github.com/jflam/sdd-space-invaders-claude>
+- <https://github.com/HugoPalomares/design-intent-for-sdd>
 
 ## Authors
 
