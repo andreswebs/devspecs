@@ -9,6 +9,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 # shellcheck disable=SC1091
 source "${SCRIPT_DIR}/functions.bash"
 
+# shellcheck disable=SC1091
+source "${SCRIPT_DIR}/env.bash"
+
 function generate_prompt_filename() {
   local filename="${1}"
   if [[ "${filename}" == *.md ]]; then
@@ -17,7 +20,7 @@ function generate_prompt_filename() {
 }
 
 REPO_ROOT_DIR=$(get_repo_root)
-DEVSPECS_PROMPTS_DIR="${REPO_ROOT_DIR}/.devspecs/prompts"
+DEVSPECS_PROMPTS_DIR="${REPO_ROOT_DIR}/${DEVSPECS_PROMPTS_RELATIVE_DIR:-.devspecs/prompts}"
 GITHUB_PROMPTS_DIR="${REPO_ROOT_DIR}/.github/prompts"
 
 if [ ! -d "${DEVSPECS_PROMPTS_DIR}" ]; then
