@@ -17,6 +17,31 @@ function is_readable_file() {
     [ -f "${1}" ] && [ -r "${1}" ]
 }
 
+function is_valid_json_string() {
+    local json_string="${1}"
+
+    if [ -z "${json_string}" ]; then
+        log "error: json string must be provided"
+        return 1
+    fi
+
+    jq --exit-status . >/dev/null 2>&1 <<< "${json_string}"
+    local exit_code=${?}
+
+    # jq --exit-status returns:
+    # 0: valid JSON with truthy value
+    # 1: valid JSON with falsy value (null, false)
+    # 4: empty input
+    # 5: invalid JSON syntax
+
+    # We consider both 0 and 1 as valid JSON
+    if [ "${exit_code}" -eq 0 ] || [ "${exit_code}" -eq 1 ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 function get_repo_root() {
     git rev-parse --show-toplevel
 }
@@ -28,6 +53,22 @@ function get_current_branch() {
 function is_valid_spec_name() {
     local name="${1}"
     [[ "${name}" =~ ^[0-9]{3}-[a-zA-Z0-9]+([_-][a-zA-Z0-9]+)*$ ]]
+}
+
+function trim_leading_slashes() {
+    local input="${1}"
+    while [[ "${input}" == /* ]]; do
+        input="${input#/}"
+    done
+    echo "${input}"
+}
+
+function trim_trailing_slashes() {
+    local input="${1}"
+    while [[ "${input}" == */ ]]; do
+        input="${input%/}"
+    done
+    echo "${input}"
 }
 
 function get_relative_path() {
@@ -151,68 +192,158 @@ function create_relative_symlink() {
     )
 }
 
-function check_feature_branch() {
-    local branch="${1}"
-    if ! is_valid_spec_name "${branch}"; then
-        log "error: Not on a feature branch. Current branch: $branch"
-        log "Feature branches should be named like: 001-examplename"
+function validate_spec_name() {
+    local name="${1}"
+    if ! is_valid_spec_name "${name}"; then
+        log "error: '${name}' is not a valid spec branch"
+        log "Specs should be named like: 001-examplename."
         return 1
     fi
 	return 0
 }
 
-function get_spec_dir_name() {
-    local specs_dir="${DEVSPECS_SPECS_DIR:-specs}"
-    # Remove all leading slashes
-    while [[ "${specs_dir}" == /* ]]; do
-        specs_dir="${specs_dir#/}"
-    done
-    # Remove all trailing slashes
-    while [[ "${specs_dir}" == */ ]]; do
-        specs_dir="${specs_dir%/}"
-    done
+function get_specs_parent_dir_name() {
+    local base_dir="${1}"
+    local specs_dir="${DEVSPECS_SPECS_RELATIVE_DIR:-.devspecs/specs}"
+    specs_dir=$(trim_leading_slashes "${specs_dir}")
+    specs_dir=$(trim_trailing_slashes "${specs_dir}")
+    echo "${base_dir}/${specs_dir}"
+}
 
+function get_spec_dir_name() {
     local base_dir="${1}"
     local spec_name="${2}"
-
-    if ! is_valid_spec_name "${spec_name}"; then
-        log "error: '${spec_name}' is not a valid spec name"
-        return 1
-    fi
-
-    echo "${base_dir}/${specs_dir}/${spec_name}"
+    local specs_parent_dir
+    specs_parent_dir=$(get_specs_parent_dir_name "${base_dir}")
+    echo "${specs_parent_dir}/${spec_name}"
 }
 
-function get_feature_dir() {
-    local base_dir="${1}"
-    local branch_name="${2}"
-
-    if ! check_feature_branch "${branch_name}"; then
-        return 1
-    fi
-
-    get_spec_dir_name "${base_dir}" "${branch_name}"
-}
-
-function get_feature_paths() {
+function get_spec_info() {
     local repo_root
     local current_branch
-    local feature_dir
+    local spec_dir
 
-    repo_root=$(get_repo_root)
-    current_branch=$(get_current_branch)
-    feature_dir=$(get_feature_dir "${repo_root}" "${current_branch}")
+    repo_root=$(get_repo_root || exit 1)
+    current_branch=$(get_current_branch || exit 1)
 
-    cat <<EOF
-REPO_ROOT='${repo_root}'
-CURRENT_BRANCH='${current_branch}'
-FEATURE_DIR='${feature_dir}'
-FEATURE_SPEC='${feature_dir}/spec.md'
-IMPL_PLAN='${feature_dir}/plan.md'
-TASKS='${feature_dir}/tasks.md'
-RESEARCH='${feature_dir}/research.md'
-DATA_MODEL='${feature_dir}/data-model.md'
-QUICKSTART='${feature_dir}/quickstart.md'
-CONTRACTS_DIR='${feature_dir}/contracts'
-EOF
+    validate_spec_name "${current_branch}" || exit 1
+
+    spec_dir=$(get_spec_dir_name "${repo_root}" "${current_branch}")
+
+    local spec_file_base_name="spec.md"
+    local plan_file_base_name="plan.md"
+    local research_file_base_name="research.md"
+    local data_model_file_base_name="data-model.md"
+    local tasks_file_base_name="tasks.md"
+
+    local contracts_nested_relative_dir="${DEVSPECS_CONTRACTS_NESTED_RELATIVE_DIR:-contracts}"
+    contracts_nested_relative_dir=$(trim_leading_slashes "${contracts_nested_relative_dir}")
+    contracts_nested_relative_dir=$(trim_trailing_slashes "${contracts_nested_relative_dir}")
+
+    local tasks_nested_relative_dir="${DEVSPECS_TASKS_NESTED_RELATIVE_DIR:-tasks}"
+    tasks_nested_relative_dir=$(trim_leading_slashes "${tasks_nested_relative_dir}")
+    tasks_nested_relative_dir=$(trim_trailing_slashes "${tasks_nested_relative_dir}")
+
+    local spec_file="${spec_dir}/${spec_file_base_name}"
+    local plan_file="${spec_dir}/${plan_file_base_name}"
+    local research_file="${spec_dir}/${research_file_base_name}"
+    local data_model_file="${spec_dir}/${data_model_file_base_name}"
+    local contracts_dir="${spec_dir}/${contracts_nested_relative_dir}"
+    local tasks_dir="${spec_dir}/${tasks_nested_relative_dir}"
+    local tasks_file="${spec_dir}/${tasks_file_base_name}"
+
+    local SPEC_INFO='{
+        "repo_root": "'${repo_root}'",
+        "current_branch": "'${current_branch}'",
+        "spec_dir": "'${spec_dir}'",
+        "spec_file": "'${spec_file}'",
+        "plan_file": "'${plan_file}'",
+        "research_file": "'${research_file}'",
+        "data_model_file": "'${data_model_file}'",
+        "contracts_dir": "'${contracts_dir}'",
+        "tasks_dir": "'${tasks_dir}'",
+        "tasks_file": "'${tasks_file}'"
+    }'
+
+    if ! is_valid_json_string "${SPEC_INFO}"; then
+        log "error: get_spec_info internal error: invalid JSON produced"
+        return 1
+    fi
+
+    echo "${SPEC_INFO}" | tr -d '\n' | tr -d ' '
+}
+
+function find_highest_number_dir_prefix() {
+    local parent_dir="${1}"
+    local highest=0
+
+    if [ -z "${parent_dir}" ]; then
+        log "error: parent directory must be provided"
+        return 1
+    fi
+
+    if is_non_empty_dir "${parent_dir}"; then
+        for dir in "${parent_dir}"/*; do
+            if [ -d "${dir}" ]; then
+                dir_base_name=$(basename "${dir}")
+                number=$(echo "${dir_base_name}" | grep -o '^[0-9]\+' || echo "0")
+                number=$(( 10#${number} ))
+                if [ "${number}" -gt "${highest}" ]; then
+                    highest="${number}"
+                fi
+            fi
+        done
+    fi
+    echo "${highest}"
+}
+
+function generate_next_spec_number() {
+    local current_number="${1}"
+
+    if [ -z "${current_number}" ]; then
+        log "error: a number must be provided"
+        return 1
+    fi
+
+    if ! [[ "${current_number}" =~ ^[0-9]+$ ]]; then
+        log "error: input must be a non-negative integer"
+        return 1
+    fi
+
+    local next_number
+    local spec_number
+    next_number=$((current_number + 1))
+    spec_number=$(printf "%03d" "${next_number}")
+    echo "${spec_number}"
+}
+
+function generate_spec_name_suffix() {
+    local text="${1}"
+
+    if [ -z "${text}" ]; then
+        log "error: an input text string must be provided"
+        return 1
+    fi
+
+    local normalized_text
+    local name_suffix
+
+    normalized_text=$(
+        echo "${text}" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed 's/[^a-z0-9]/-/g' \
+            | sed 's/-\+/-/g' \
+            | sed 's/^-//' \
+            | sed 's/-$//'
+    )
+
+    name_suffix=$(
+        echo "$normalized_text" \
+            | tr '-' '\n' \
+            | grep -v '^$' \
+            | head -3 \
+            | tr '\n' '-' \
+            | sed 's/-$//')
+
+    echo "${name_suffix}"
 }
