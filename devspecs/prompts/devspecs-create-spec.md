@@ -18,7 +18,7 @@ Follow the instructions below to create a feature SPECIFICATION document.
 3. INITIALIZE: Run the spec initialization script:
 
 ```sh
-REQUIREMENT_TITLE="% save requirement title selected by the user in the previous step in this variable %"
+export REQUIREMENT_TITLE="% save requirement title selected by the user in the previous step in this variable %"
 .devspecs/scripts/spec-init.bash "${REQUIREMENT_TITLE}"
 ```
 
