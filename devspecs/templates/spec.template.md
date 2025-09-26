@@ -28,7 +28,7 @@ List of edge cases. Follow this format:
 
 %
 
-## Key Entities % (include if feature involves data) %
+## Key Entities % (include if feature involves data in a database) %
 
 %
 
@@ -36,6 +36,18 @@ List of entities. Follow this format:
 
 - **[Entity 1]**: [What it represents, key attributes without implementation]
 - **[Entity 2]**: [What it represents, relationships to other entities]
+- ...
+
+%
+
+## UI Components %( include if feature involves the UI )
+
+%
+
+List of components. Follow this format:
+
+- **[Component 1]**: [What it is for]
+- **[Component 2]**: [What it is for]
 - ...
 
 %

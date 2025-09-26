@@ -38,9 +38,11 @@ export REQUIREMENT_TITLE="% save requirement title selected by the user in the p
 
 8. Based on the user story, if data is involved, identify Key Entities.
 
-9. Run review checklist (go to **CHECK**).
+9. Based on the user story, if the UI is involved, identify UI Components.
 
-10. STOP.
+10. Run review checklist (go to **CHECK**).
+
+11. STOP.
 
 ---
 
