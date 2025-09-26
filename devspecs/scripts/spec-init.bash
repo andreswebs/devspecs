@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Create a new spec with branch, directory structure, and template
 
 set -o errexit
 set -o nounset
@@ -30,7 +29,7 @@ SPEC_NAME_SUFFIX=$(generate_spec_name_suffix "${DESCRIPTION}")
 SPEC_NAME="${SPEC_NUMBER_PREFIX}-${SPEC_NAME_SUFFIX}"
 SPEC_DIR="${SPECS_DIR}/${SPEC_NAME}"
 SPEC_FILE="${SPEC_DIR}/spec.md"
-SPEC_TEMPLATE_FILE="${REPO_ROOT_DIR}/${DEVSPECS_SPEC_TEMPLATE_RELATIVE_FILE_NAME:-.devspecs/templates/plan.template.md}"
+SPEC_TEMPLATE_FILE="${REPO_ROOT_DIR}/${DEVSPECS_SPEC_TEMPLATE_RELATIVE_FILE_NAME:-.devspecs/templates/spec.template.md}"
 
 git checkout -b "${SPEC_NAME}"
 mkdir -p "${SPEC_DIR}"

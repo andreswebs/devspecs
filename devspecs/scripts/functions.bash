@@ -17,6 +17,31 @@ function is_readable_file() {
     [ -f "${1}" ] && [ -r "${1}" ]
 }
 
+function is_valid_json_string() {
+    local json_string="${1}"
+
+    if [ -z "${json_string}" ]; then
+        log "error: json string must be provided"
+        return 1
+    fi
+
+    jq --exit-status . >/dev/null 2>&1 <<< "${json_string}"
+    local exit_code=${?}
+
+    # jq --exit-status returns:
+    # 0: valid JSON with truthy value
+    # 1: valid JSON with falsy value (null, false)
+    # 4: empty input
+    # 5: invalid JSON syntax
+
+    # We consider both 0 and 1 as valid JSON
+    if [ "${exit_code}" -eq 0 ] || [ "${exit_code}" -eq 1 ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 function get_repo_root() {
     git rev-parse --show-toplevel
 }
@@ -207,20 +232,25 @@ function get_spec_info() {
 
     local spec_file_base_name="spec.md"
     local plan_file_base_name="plan.md"
-    local tasks_file_base_name="tasks.md"
     local research_file_base_name="research.md"
     local data_model_file_base_name="data-model.md"
+    local tasks_file_base_name="tasks.md"
 
     local contracts_nested_relative_dir="${DEVSPECS_CONTRACTS_NESTED_RELATIVE_DIR:-contracts}"
     contracts_nested_relative_dir=$(trim_leading_slashes "${contracts_nested_relative_dir}")
     contracts_nested_relative_dir=$(trim_trailing_slashes "${contracts_nested_relative_dir}")
 
+    local tasks_nested_relative_dir="${DEVSPECS_TASKS_NESTED_RELATIVE_DIR:-tasks}"
+    tasks_nested_relative_dir=$(trim_leading_slashes "${tasks_nested_relative_dir}")
+    tasks_nested_relative_dir=$(trim_trailing_slashes "${tasks_nested_relative_dir}")
+
     local spec_file="${spec_dir}/${spec_file_base_name}"
     local plan_file="${spec_dir}/${plan_file_base_name}"
-    local tasks_file="${spec_dir}/${tasks_file_base_name}"
     local research_file="${spec_dir}/${research_file_base_name}"
     local data_model_file="${spec_dir}/${data_model_file_base_name}"
     local contracts_dir="${spec_dir}/${contracts_nested_relative_dir}"
+    local tasks_dir="${spec_dir}/${tasks_nested_relative_dir}"
+    local tasks_file="${spec_dir}/${tasks_file_base_name}"
 
     local SPEC_INFO='{
         "repo_root": "'${repo_root}'",
@@ -228,11 +258,17 @@ function get_spec_info() {
         "spec_dir": "'${spec_dir}'",
         "spec_file": "'${spec_file}'",
         "plan_file": "'${plan_file}'",
-        "tasks_file": "'${tasks_file}'",
         "research_file": "'${research_file}'",
         "data_model_file": "'${data_model_file}'",
-        "contracts_dir": "'${contracts_dir}'"
+        "contracts_dir": "'${contracts_dir}'",
+        "tasks_dir": "'${tasks_dir}'",
+        "tasks_file": "'${tasks_file}'"
     }'
+
+    if ! is_valid_json_string "${SPEC_INFO}"; then
+        log "error: get_spec_info internal error: invalid JSON produced"
+        return 1
+    fi
 
     echo "${SPEC_INFO}" | tr -d '\n' | tr -d ' '
 }

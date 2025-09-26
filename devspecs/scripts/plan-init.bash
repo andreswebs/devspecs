@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# Initialize implementation plan structure for current branch
-# Returns metadata needed for implementation plan generation
 
 set -o errexit
 set -o nounset
