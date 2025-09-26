@@ -12,11 +12,12 @@ source "${SCRIPT_DIR}/functions.bash"
 # shellcheck disable=SC1091
 source "${SCRIPT_DIR}/env.bash"
 
-SPEC_INFO=$(get_spec_info || exit 1)
-SPEC_DIR=$(echo "${SPEC_INFO}" | jq --raw-output '.spec_dir')
+
+REPO_ROOT_DIR=$(get_repo_root)
+SPECS_DIR=$(get_specs_parent_dir_name "${REPO_ROOT_DIR}")
 
 REQUIREMENTS_FILE_BASE_NAME="requirements.md"
-REQUIREMENTS_FILE="${SPEC_DIR}/${REQUIREMENTS_FILE_BASE_NAME}"
+REQUIREMENTS_FILE="${SPECS_DIR}/${REQUIREMENTS_FILE_BASE_NAME}"
 
 if ! is_readable_file "${REQUIREMENTS_FILE}"; then
     log "error: failed to access ${REQUIREMENTS_FILE}"
