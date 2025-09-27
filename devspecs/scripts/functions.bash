@@ -42,6 +42,25 @@ function is_valid_json_string() {
     fi
 }
 
+function merge_json_objects() {
+    if [ "${#}" -eq 0 ]; then
+        log "error: merge_json_objects: at least one argument is required"
+        return 1
+    fi
+
+    local jsons=()
+
+    for arg in "${@}"; do
+        if ! echo "${arg}" | jq --exit-status 'type == "object"' >/dev/null 2>&1; then
+            log "error: invalid JSON object: ${arg}"
+            return 1
+        fi
+        jsons+=("${arg}")
+    done
+
+    printf '%s\n' "${jsons[@]}" | jq  --compact-output --monochrome-output --slurp 'add'
+}
+
 function get_repo_root() {
     git rev-parse --show-toplevel
 }
@@ -218,17 +237,8 @@ function get_spec_dir_name() {
     echo "${specs_parent_dir}/${spec_name}"
 }
 
-function get_spec_info() {
-    local repo_root
-    local current_branch
-    local spec_dir
-
-    repo_root=$(get_repo_root || exit 1)
-    current_branch=$(get_current_branch || exit 1)
-
-    validate_spec_name "${current_branch}" || exit 1
-
-    spec_dir=$(get_spec_dir_name "${repo_root}" "${current_branch}")
+function generate_spec_metadata() {
+    local spec_dir="${1}"
 
     local spec_file_base_name="spec.md"
     local plan_file_base_name="plan.md"
@@ -252,9 +262,7 @@ function get_spec_info() {
     local tasks_dir="${spec_dir}/${tasks_nested_relative_dir}"
     local tasks_file="${spec_dir}/${tasks_file_base_name}"
 
-    local SPEC_INFO='{
-        "repo_root": "'${repo_root}'",
-        "current_branch": "'${current_branch}'",
+    local SPEC_METADATA='{
         "spec_dir": "'${spec_dir}'",
         "spec_file": "'${spec_file}'",
         "plan_file": "'${plan_file}'",
@@ -265,12 +273,37 @@ function get_spec_info() {
         "tasks_file": "'${tasks_file}'"
     }'
 
+    echo "${SPEC_METADATA}" | jq --compact-output --monochrome-output
+}
+
+function get_spec_info() {
+    local repo_root
+    local spec_name
+    local spec_dir
+    local spec_metadata
+
+    repo_root=$(get_repo_root || exit 1)
+    spec_name=$(get_current_branch || exit 1)
+
+    validate_spec_name "${spec_name}" || exit 1
+
+    spec_dir=$(get_spec_dir_name "${repo_root}" "${spec_name}")
+    spec_metadata=$(generate_spec_metadata "${spec_dir}")
+
+    local spec_info_partial='{
+        "repo_root": "'${repo_root}'",
+        "spec_name": "'${spec_name}'"
+    }'
+
+    local SPEC_INFO
+    SPEC_INFO=$(merge_json_objects "${spec_info_partial}" "${spec_metadata}")
+
     if ! is_valid_json_string "${SPEC_INFO}"; then
         log "error: get_spec_info internal error: invalid JSON produced"
         return 1
     fi
 
-    echo "${SPEC_INFO}" | tr -d '\n' | tr -d ' '
+    echo "${SPEC_INFO}"
 }
 
 function find_highest_number_dir_prefix() {
