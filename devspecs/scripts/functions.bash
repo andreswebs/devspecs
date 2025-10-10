@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function log() {
+function echo_stderr() {
     echo "${*}" >&2
 }
 
@@ -21,7 +21,7 @@ function is_valid_json_string() {
     local json_string="${1}"
 
     if [ -z "${json_string}" ]; then
-        log "error: json string must be provided"
+        echo_stderr "error: json string must be provided"
         return 1
     fi
 
@@ -44,7 +44,7 @@ function is_valid_json_string() {
 
 function merge_json_objects() {
     if [ "${#}" -eq 0 ]; then
-        log "error: merge_json_objects: at least one argument is required"
+        echo_stderr "error: merge_json_objects: at least one argument is required"
         return 1
     fi
 
@@ -52,7 +52,7 @@ function merge_json_objects() {
 
     for arg in "${@}"; do
         if ! echo "${arg}" | jq --exit-status 'type == "object"' >/dev/null 2>&1; then
-            log "error: invalid JSON object: ${arg}"
+            echo_stderr "error: invalid JSON object: ${arg}"
             return 1
         fi
         jsons+=("${arg}")
@@ -95,7 +95,7 @@ function get_relative_path() {
     local target_dir="${2}"
 
     if [[ -z "${source_dir}" || -z "${target_dir}" ]]; then
-        log "error: both source and target directories must be provided"
+        echo_stderr "error: both source and target directories must be provided"
         return 1
     fi
 
@@ -156,17 +156,17 @@ function create_relative_symlink() {
     local target_path="${2}"
 
     if [[ -z "${source_path}" || -z "${target_path}" ]]; then
-        log "error: both source and target paths must be provided"
+        echo_stderr "error: both source and target paths must be provided"
         return 1
     fi
 
     if ! source_path=$(realpath "${source_path}" 2>/dev/null); then
-        log "error: source path '${1}' does not exist or is not accessible"
+        echo_stderr "error: source path '${1}' does not exist or is not accessible"
         return 1
     fi
 
     if [[ ! -e "${source_path}" ]]; then
-        log "error: source path '${source_path}' does not exist"
+        echo_stderr "error: source path '${source_path}' does not exist"
         return 1
     fi
 
@@ -176,7 +176,7 @@ function create_relative_symlink() {
     target_filename=$(basename "${target_path}")
 
     if ! mkdir -p "${target_dir}"; then
-        log "error: failed to create target directory '${target_dir}'"
+        echo_stderr "error: failed to create target directory '${target_dir}'"
         return 1
     fi
 
@@ -185,10 +185,10 @@ function create_relative_symlink() {
 
     if [[ -e "${target_path}" && ! -L "${target_path}" ]]; then
         if [[ -f "${target_path}" ]]; then
-            log "error: target path '${target_path}' exists as a regular file"
+            echo_stderr "error: target path '${target_path}' exists as a regular file"
             return 1
         else
-            log "error: target path '${target_path}' already exists and is not a symlink"
+            echo_stderr "error: target path '${target_path}' already exists and is not a symlink"
             return 1
         fi
     fi
@@ -198,12 +198,12 @@ function create_relative_symlink() {
 
     (
         if ! pushd "${target_dir}" > /dev/null; then
-            log "error: failed to access target directory '${target_dir}'"
+            echo_stderr "error: failed to access target directory '${target_dir}'"
             return 1
         fi
 
         if ! ln -s -f "${relative_path}" "${target_filename}"; then
-            log "error: failed to create symlink"
+            echo_stderr "error: failed to create symlink"
             return 1
         fi
 
@@ -214,8 +214,8 @@ function create_relative_symlink() {
 function validate_spec_name() {
     local name="${1}"
     if ! is_valid_spec_name "${name}"; then
-        log "error: '${name}' is not a valid spec branch"
-        log "Specs should be named like: 001-examplename."
+        echo_stderr "error: '${name}' is not a valid spec branch"
+        echo_stderr "Specs should be named like: 001-examplename."
         return 1
     fi
 	return 0
@@ -299,7 +299,7 @@ function get_spec_info() {
     SPEC_INFO=$(merge_json_objects "${spec_info_partial}" "${spec_metadata}")
 
     if ! is_valid_json_string "${SPEC_INFO}"; then
-        log "error: get_spec_info internal error: invalid JSON produced"
+        echo_stderr "error: get_spec_info internal error: invalid JSON produced"
         return 1
     fi
 
@@ -311,7 +311,7 @@ function find_highest_number_dir_prefix() {
     local highest=0
 
     if [ -z "${parent_dir}" ]; then
-        log "error: parent directory must be provided"
+        echo_stderr "error: parent directory must be provided"
         return 1
     fi
 
@@ -334,12 +334,12 @@ function generate_next_spec_number() {
     local current_number="${1}"
 
     if [ -z "${current_number}" ]; then
-        log "error: a number must be provided"
+        echo_stderr "error: a number must be provided"
         return 1
     fi
 
     if ! [[ "${current_number}" =~ ^[0-9]+$ ]]; then
-        log "error: input must be a non-negative integer"
+        echo_stderr "error: input must be a non-negative integer"
         return 1
     fi
 
@@ -354,7 +354,7 @@ function generate_spec_name_suffix() {
     local text="${1}"
 
     if [ -z "${text}" ]; then
-        log "error: an input text string must be provided"
+        echo_stderr "error: an input text string must be provided"
         return 1
     fi
 
