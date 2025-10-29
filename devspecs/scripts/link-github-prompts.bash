@@ -24,7 +24,7 @@ DEVSPECS_PROMPTS_DIR="${REPO_ROOT_DIR}/${DEVSPECS_PROMPTS_RELATIVE_DIR:-.devspec
 GITHUB_PROMPTS_DIR="${REPO_ROOT_DIR}/.github/prompts"
 
 if [ ! -d "${DEVSPECS_PROMPTS_DIR}" ]; then
-    log "error: ${DEVSPECS_PROMPTS_DIR} does not exist."
+    echo_stderr "error: ${DEVSPECS_PROMPTS_DIR} does not exist."
     exit 1
 fi
 

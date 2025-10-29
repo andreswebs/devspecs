@@ -22,27 +22,13 @@ We will develop this document together, by having a discussion during a session 
 
 We will gradually update the document with our findings and decisions during this session.
 
+You must format the document using the template at `.devspecs/templates/product.template.md`. Read that file now to understand the format. Use any section headings that may be relevant, as gathered from the conversation in the present briefing session.
+
 Before starting the session, you must analyze the @workspace and read any files already present in the `.devspecs/` directory.
 
 You must ask me clarifying questions as needed.
 
 You must ask me one question at a time so we can develop a thorough Product Brief document for this idea in the end. Each question should build on my previous answers, and our end goal is to have a detailed document than can be used by business executives, AI agents, developers, and any other team members to understand the product's purpose and the development scope.
-
-Let's create this document iteratively and dig into every relevant detail to compose the document. Remember, ask me only one question at a time.
-
-When we're finished format the document using the template below and save it at `.devspecs/memory/product.md`. Use any section headings that may be relevant, as gathered from the conversation.
-
-Here's the template:
-
-```md
----
-applyTo: "**/*"
----
-
-# Product Brief: [PRODUCT NAME]
-
-<!-- CONTINUE FROM HERE -->
-```
 
 After you have collected all my answers, you must answer for yourself the following questions, before writing the document:
 
@@ -66,7 +52,7 @@ Example reponses:
 
 Example responses:
 
-- Security practitioners can quickly identify vulnerabilities and confidently respond to incidents.
+- Security practitioneåçrs can quickly identify vulnerabilities and confidently respond to incidents.
 
 - Secrets are protected across all repositories mostly by default.
 
@@ -76,6 +62,6 @@ Example responses:
 
 - Example: Automatic secret identification and protection across all code repositories with minimal user configuration requirements.
 
-Now let's start with our conversation.
+Now let's begin our conversation. We will create the product document iteratively and dig into every relevant detail to compose the document. Remember, you must ask me only one question at a time.
 
 Confirm that you understood, before we begin with your first question.

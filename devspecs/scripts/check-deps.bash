@@ -28,11 +28,11 @@ for cmd in "${REQUIRED_COMMANDS[@]}"; do
 done
 
 if [[ "${#missing_commands[@]}" -gt 0 ]]; then
-    log "error: the following required commands are missing:"
+    echo_stderr "error: the following required commands are missing:"
     for missing_cmd in "${missing_commands[@]}"; do
-        log "  - ${missing_cmd}"
+        echo_stderr "  - ${missing_cmd}"
     done
     exit 1
 else
-    log "All required dependencies are available."
+    echo_stderr "All required dependencies are available."
 fi

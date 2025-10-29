@@ -24,7 +24,7 @@ DEVSPECS_MEMORY_DIR="${REPO_ROOT_DIR}/${DEVSPECS_MEMORY_RELATIVE_DIR:-.devspecs/
 GITHUB_INSTRUCTIONS_DIR="${REPO_ROOT_DIR}/.github/instructions"
 
 if [ ! -d "${DEVSPECS_MEMORY_DIR}" ]; then
-    log "error: ${DEVSPECS_MEMORY_DIR} does not exist."
+    echo_stderr "error: ${DEVSPECS_MEMORY_DIR} does not exist."
     exit 1
 fi
 

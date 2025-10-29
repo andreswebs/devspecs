@@ -14,7 +14,7 @@ source "${SCRIPT_DIR}/env.bash"
 
 DESCRIPTION="${1}"
 if [ -z "${DESCRIPTION}" ]; then
-    log "Usage: ${0} <description>"
+    echo_stderr "Usage: ${0} <description>"
     exit 1
 fi
 
@@ -37,7 +37,7 @@ mkdir -p "${SPEC_DIR}"
 if [ -f "${SPEC_TEMPLATE_FILE}" ] && [ -r "${SPEC_TEMPLATE_FILE}" ]; then
     cp "${SPEC_TEMPLATE_FILE}" "${SPEC_FILE}"
 else
-    log "warning: template not found at ${SPEC_TEMPLATE_FILE}"
+    echo_stderr "warning: template not found at ${SPEC_TEMPLATE_FILE}"
     touch "${SPEC_FILE}"
 fi
 

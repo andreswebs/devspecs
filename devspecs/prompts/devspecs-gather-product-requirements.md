@@ -15,9 +15,9 @@ Don't focus on code exploration in this phase. Instead, just focus on writing re
 
 Focus on WHAT users need and WHY. Avoid HOW to implement (no mentions of tech stack, APIs, code structure).
 
-After that, you will write the final PRD in EARS syntax. Save it as `requirements.md` at a location specified by the user (default to the root of this project).
-
 If there are areas where the user doesn't fully know the answer, add a note in parenthesis: (NEEDS CLARIFICATION).
+
+After you have gathered all the requirements from the user, write the final PRD in EARS syntax. Save it at `.devspecs/specs/requirements.md`.
 
 ---
 
@@ -107,9 +107,9 @@ The keywords WHEN, WHILE and WHERE can also be used within IF-THEN statements to
 
 **Constraints:**
 
-- The model MUST create a `requirements.md` file if it doesn't already exist.
+- The model MUST create a `.devspecs/specs/requirements.md` file if it doesn't already exist.
 - The model MUST generate an initial version of the requirements document based on the user's rough idea WITHOUT asking sequential questions first.
-- The model MUST format the initial `requirements.md` document with:
+- The model MUST format the initial `.devspecs/specs/requirements.md` document with:
   - A clear introduction section that summarizes the product or feature.
   - A hierarchical numbered list of requirements where each contains:
     - A user story in the format `As a <role>, I want <feature>, so that <benefit>.`.
@@ -126,6 +126,4 @@ The keywords WHEN, WHILE and WHERE can also be used within IF-THEN statements to
 
 Now let's start. The initial idea to develop will be provided below.
 
-Confirm that you understood, then ask the user the filesystem path where this document must be saved.
-
-After that, create the initial document at the specified location, and proceed with your next question.
+Confirm that you understood, then create the initial document at the specified location and proceed with your next question.

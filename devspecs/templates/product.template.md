@@ -10,7 +10,7 @@ applyTo: "**/*"
 
 Provide a high-level overview of the product here.
 
-Explain in one or two paragraphs why the product exists and the problems it solves (the Proble), who it's for (the Personas), and how it should work for its users (the Vision and the Goals).
+Explain in one or two paragraphs why the product exists and the problems it solves (the Problem), who it's for (the Personas), and how it should work for its users (the Vision and the Goals).
 
 %
 

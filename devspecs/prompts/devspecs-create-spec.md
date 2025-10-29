@@ -7,7 +7,9 @@ mode: agent
 
 Follow the instructions below to create a feature SPECIFICATION document.
 
-1. READ EXISTING REQUIREMENTS: Run the requirements script:
+1. READ EXISTING MEMORY: Read all files in `.devspecs/memory/` before continuing.
+
+2. READ EXISTING REQUIREMENTS: Run the requirements script:
 
 ```sh
 .devspecs/scripts/read-requirements.bash
@@ -24,12 +26,14 @@ export REQUIREMENT_TITLE="% save requirement title selected by the user in the p
 
 4. Use the output information from the script above to complete the next steps.
 
-5. Identify the spec_dir location of the `spec.md` file to use. That file contains a template where sections to be replaced are marked by percent sign delimiters (as in: % TEXT %). You must fill the information for the PLAN into the `plan.md` file following the template format. Update the `plan.md` file as you proceed through the next steps. TEMPLATE RULE: follow the guidance between percent sign delimiters: example: % GUIDANCE %; remove all text between and including those delimiters, replacing it with the resulting text if there is any.
+5. Identify the spec_dir location of the `spec.md` file to use. That file contains a template where sections to be replaced are marked by percent sign delimiters (as in: % TEXT %). You must fill the information for the PLAN into the `plan.md` file following the template format. Update the `plan.md` file as you proceed through the next steps.
+
+TEMPLATE RULE: follow the guidance between percent sign delimiters. Example: % GUIDANCE %; remove all text between and including those delimiters, replacing it with the resulting text if there is any.
 
 **Document section requirements**:
 
 - Mandatory sections must be completed for every feature.
-- Optional sections include only when relevant to the feature.
+- Optional sections are to be included only when relevant to the feature.
 - When a section doesn't apply, remove it entirely (don't leave as "N/A").
 
 6. Extract the User Story and Acceptance Criteria as previously read from the requirements document and fill these in the template.
@@ -38,7 +42,7 @@ export REQUIREMENT_TITLE="% save requirement title selected by the user in the p
 
 8. Based on the user story, if data is involved, identify Key Entities.
 
-9. Based on the user story, if the UI is involved, identify UI Components.
+9. Based on the user story, if an UI is involved, identify UI Components.
 
 10. Run review checklist (go to **CHECK**).
 

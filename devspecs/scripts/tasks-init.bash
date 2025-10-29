@@ -24,7 +24,7 @@ mkdir -p "${TASKS_DIR}"
 if [ -f "${TASKS_TEMPLATE_FILE}" ] && [ -r "${TASKS_TEMPLATE_FILE}"  ]; then
     cp "${TASKS_TEMPLATE_FILE}" "${TASKS_FILE}"
 else
-    log "warning: template not found at ${TASKS_TEMPLATE_FILE}"
+    echo_stderr "warning: template not found at ${TASKS_TEMPLATE_FILE}"
     touch "${TASKS_FILE}"
 fi
 

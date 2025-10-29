@@ -20,7 +20,7 @@ REQUIREMENTS_FILE_BASE_NAME="requirements.md"
 REQUIREMENTS_FILE="${SPECS_DIR}/${REQUIREMENTS_FILE_BASE_NAME}"
 
 if ! is_readable_file "${REQUIREMENTS_FILE}"; then
-    log "error: failed to access ${REQUIREMENTS_FILE}"
+    echo_stderr "error: failed to access ${REQUIREMENTS_FILE}"
     exit 1
 fi
 

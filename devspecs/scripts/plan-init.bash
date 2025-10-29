@@ -24,7 +24,7 @@ mkdir -p "${SPEC_DIR}"
 if [ -f "${PLAN_TEMPLATE_FILE}" ] && [ -r "${PLAN_TEMPLATE_FILE}"  ]; then
     cp "${PLAN_TEMPLATE_FILE}" "${PLAN_FILE}"
 else
-    log "warning: template not found at ${PLAN_TEMPLATE_FILE}"
+    echo_stderr "warning: template not found at ${PLAN_TEMPLATE_FILE}"
     touch "${PLAN_FILE}"
 fi
 
